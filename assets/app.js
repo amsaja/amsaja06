@@ -93,7 +93,7 @@ async function renderSite() {
 
     // 필진 및 활동
     $("selected-list").innerHTML = selected
-      .filter(x => x.type === "필진" || x.type === "연재" || x.type === "활동")
+      .filter(x => x.type === "필진" || x.type === "연재" || x.type === "활동" || x.type === "칼럼")
       .map(x => row({
       year:x.year,
       title:x.title,
