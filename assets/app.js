@@ -99,6 +99,14 @@ async function renderSite() {
       right:x.type || ""
     })).join("");
 
+    // 대표작
+    const featured = (works.books || [])[0];
+    if (featured) {
+      $("featured-title").textContent = `『${featured.title}』`;
+      $("featured-meta").textContent = [featured.year, featured.publisher].filter(Boolean).join(" · ");
+      $("featured-link").href = featured.url;
+    }
+
     // 단행본
     $("books").innerHTML = (works.books || []).map(x => row({
       year:x.year,
@@ -171,6 +179,83 @@ async function renderSite() {
       right:"읽기 ↗",
       url:x.url
     })).join("");
+
+    // 통합 아카이브
+    const archiveItems = [
+      ...(works.books || []).map(x => ({
+        category:"작품", date:x.year, title:`『${x.title}』`,
+        detail:[x.type, x.publisher].filter(Boolean).join(" · "), url:x.url || ""
+      })),
+      ...(works.short_fiction || []).map(x => ({
+        category:"작품", date:x.year, title:`「${x.title}」`,
+        detail:x.publication || x.status || "", url:x.url || ""
+      })),
+      ...columns.map(x => ({
+        category:"칼럼", date:x.date, title:x.title,
+        detail:x.publication || "", url:x.url || ""
+      })),
+      ...talks.flatMap(group => (group.items || []).map(x => ({
+        category:"강연", date:x.year || "",
+        title:`${x.place} · ${x.title}`,
+        detail:x.detail || group.label, url:""
+      }))),
+      ...press.map(x => ({
+        category:"기사·인터뷰", date:x.date, title:x.title,
+        detail:[x.source, x.type].filter(Boolean).join(" · "), url:x.url || ""
+      })),
+      ...awards.map(x => ({
+        category:"수상·선정", date:x.year, title:x.title,
+        detail:x.result || "", url:""
+      })),
+      ...translations.map(x => ({
+        category:"번역", date:x.year, title:x.title,
+        detail:[x.language, x.publisher, x.status].filter(Boolean).join(" · "), url:""
+      })),
+      ...blurbs.map(x => ({
+        category:"추천사", date:x.year, title:`『${x.title}』 추천사`,
+        detail:[x.author, x.publisher].filter(Boolean).join(" · "), url:x.url || ""
+      }))
+    ].sort((a,b) => (b.date || "0000").localeCompare(a.date || "0000"));
+
+    const categories = ["전체", ...new Set(archiveItems.map(x => x.category))];
+    let activeCategory = "전체";
+
+    function renderArchiveFilters() {
+      $("archive-filters").innerHTML = categories.map(category =>
+        `<button type="button" class="${category === activeCategory ? "active" : ""}" data-category="${category}" aria-pressed="${category === activeCategory}">${category}</button>`
+      ).join("");
+    }
+
+    function renderArchive() {
+      const query = $("archive-query").value.trim().toLocaleLowerCase("ko");
+      const filtered = archiveItems.filter(x => {
+        const categoryMatch = activeCategory === "전체" || x.category === activeCategory;
+        const haystack = [x.date, x.category, x.title, x.detail].join(" ").toLocaleLowerCase("ko");
+        return categoryMatch && (!query || haystack.includes(query));
+      });
+      $("archive-status").textContent = `${filtered.length}개의 기록`;
+      $("archive-list").innerHTML = filtered.length ? filtered.map(x => `
+        <article class="archive-item">
+          <time>${x.date || "—"}</time>
+          <span class="archive-category">${x.category}</span>
+          <span class="archive-main">
+            <strong>${external(x.url, x.title)}</strong>
+            ${x.detail ? `<small>${x.detail}</small>` : ""}
+          </span>
+          <span class="archive-action">${x.url ? "원문 ↗" : ""}</span>
+        </article>`).join("") : '<p class="archive-empty">조건에 맞는 기록이 없습니다.</p>';
+    }
+
+    renderArchiveFilters();
+    renderArchive();
+    $("archive-query").addEventListener("input", renderArchive);
+    $("archive-filters").addEventListener("click", event => {
+      const button = event.target.closest("button[data-category]");
+      if (!button) return;
+      activeCategory = button.dataset.category;
+      renderArchiveFilters();
+      renderArchive();
+    });
 
     $("updated").textContent = `마지막 업데이트 ${meta.updated}`;
 
