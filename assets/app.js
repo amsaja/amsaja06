@@ -209,23 +209,30 @@ async function renderSite() {
           <ellipse class="korea-shape jeju" cx="250" cy="582" rx="39" ry="13"/>
           ${venues.map((venue,index) => {
             const anchor=project(venue.lon,venue.lat);
-            const pinX=anchor.x+venue.dx;
-            const pinY=anchor.y+venue.dy;
+            const markerX=anchor.x+venue.dx;
+            const markerY=anchor.y+venue.dy;
             const labelAnchor=venue.dx < 0 ? "end" : "start";
-            const labelX=pinX+(venue.dx < 0 ? -12 : 12);
-            return `<g class="venue-pin" data-venue-index="${index}" role="button" tabindex="0" aria-label="${venue.name} 강연 정보 보기">
-              <line class="pin-leader" x1="${anchor.x}" y1="${anchor.y}" x2="${pinX}" y2="${pinY}"/>
-              <circle class="pin-anchor" cx="${anchor.x}" cy="${anchor.y}" r="3"/>
-              <path class="pin-shape" transform="translate(${pinX-10} ${pinY-24})" d="M10 0C4.5 0 0 4.5 0 10c0 7.5 10 18 10 18s10-10.5 10-18C20 4.5 15.5 0 10 0Z"/>
-              <circle class="pin-hole" cx="${pinX}" cy="${pinY-14}" r="3.5"/>
-              <text class="venue-label" x="${labelX}" y="${pinY-9}" text-anchor="${labelAnchor}">${venue.short}</text>
+            const labelX=markerX+(venue.dx < 0 ? -17 : 17);
+            return `<g class="venue-pin" data-venue-index="${index}" role="button" tabindex="0" aria-label="${index+1}. ${venue.name} 강연 정보 보기">
+              <line class="pin-leader" x1="${anchor.x}" y1="${anchor.y}" x2="${markerX}" y2="${markerY}"/>
+              <circle class="pin-anchor" cx="${anchor.x}" cy="${anchor.y}" r="2.5"/>
+              <circle class="pin-hit" cx="${markerX}" cy="${markerY}" r="20"/>
+              <circle class="pin-marker" cx="${markerX}" cy="${markerY}" r="11"/>
+              <text class="pin-number" x="${markerX}" y="${markerY+4}" text-anchor="middle">${index+1}</text>
+              <text class="venue-label" x="${labelX}" y="${markerY+4}" text-anchor="${labelAnchor}">${venue.short}</text>
             </g>`;
           }).join("")}
         </svg>
         <div id="map-popup" class="map-popup" hidden></div>
       </div>`;
 
-    $("talk-map-legend").innerHTML = `<span><strong>${venues.length}곳</strong>의 오프라인 강연 장소</span>`;
+    $("talk-map-legend").innerHTML = `
+      <span class="venue-index-count"><strong>${venues.length}곳</strong>의 오프라인 강연 장소</span>
+      <div class="venue-index">
+        ${venues.map((venue,index) => `<button type="button" data-venue-index="${index}">
+          <em>${index+1}</em><span>${venue.short}</span>
+        </button>`).join("")}
+      </div>`;
 
     function openVenue(index){
       const venue=venues[index];
@@ -239,14 +246,20 @@ async function renderSite() {
       document.querySelectorAll(".venue-pin").forEach((pin,i) =>
         pin.classList.toggle("active",i===Number(index))
       );
+      document.querySelectorAll(".venue-index button").forEach((button,i) =>
+        button.classList.toggle("active",i===Number(index))
+      );
       popup.querySelector(".map-popup-close").addEventListener("click",() => {
         popup.hidden=true;
-        document.querySelectorAll(".venue-pin").forEach(pin=>pin.classList.remove("active"));
+        document.querySelectorAll(".venue-pin,.venue-index button").forEach(item=>item.classList.remove("active"));
       });
+      if (window.matchMedia("(max-width: 760px)").matches) {
+        popup.scrollIntoView({ behavior:"smooth", block:"nearest" });
+      }
     }
-    $("talk-map").addEventListener("click",event => {
-      const pin=event.target.closest(".venue-pin");
-      if(pin) openVenue(pin.dataset.venueIndex);
+    document.querySelector(".talk-map-block").addEventListener("click",event => {
+      const target=event.target.closest("[data-venue-index]");
+      if(target) openVenue(target.dataset.venueIndex);
     });
     $("talk-map").addEventListener("keydown",event => {
       const pin=event.target.closest(".venue-pin");
