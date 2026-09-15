@@ -91,7 +91,7 @@ async function renderSite() {
         </span>
       </article>`).join("");
 
-    // 주요 활동
+    // 필진 및 활동
     $("selected-list").innerHTML = selected.map(x => row({
       year:x.year,
       title:x.title,
