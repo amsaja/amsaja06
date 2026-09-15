@@ -90,13 +90,32 @@ async function renderSite() {
       right:x.type || ""
     })).join("");
 
-    // 대표작
-    const featured = (works.books || [])[0];
-    if (featured) {
-      $("featured-title").textContent = `『${featured.title}』`;
-      $("featured-meta").textContent = [featured.year, featured.publisher].filter(Boolean).join(" · ");
-      $("featured-link").href = featured.url;
-    }
+    // 대표작: 책별 소개, 성과와 번역을 한곳에 연결
+    const featuredBooks = (works.books || []).filter(x => x.featured);
+    $("featured-list").innerHTML = featuredBooks.map((book, index) => {
+      const records = awards.filter(x => x.work_title === book.title);
+      const editions = translations.filter(x => x.original_title === book.title);
+      return `<article class="featured-entry">
+        <figure class="featured-cover">
+          <img src="${book.cover}" alt="${book.type} ${book.title} 표지">
+        </figure>
+        <div class="featured-copy">
+          <span class="eyebrow">Featured Work ${String(index + 1).padStart(2, "0")} · ${book.type}</span>
+          <h3>『${book.title}』</h3>
+          <p class="featured-meta">${[book.year, book.publisher].filter(Boolean).join(" · ")}</p>
+          <p class="featured-note">${book.description || ""}</p>
+          ${records.length ? `<div class="featured-records">
+            <h4>이 책의 기록</h4>
+            <ul>${records.map(record => `<li><time>${record.year}</time><span>${record.title.replace(/\\s*—\\s*『[^』]+』/, "")}</span><strong>${record.result}</strong></li>`).join("")}</ul>
+          </div>` : ""}
+          ${editions.length ? `<div class="featured-editions">
+            <h4>해외 번역판</h4>
+            <p>${editions.map(edition => external(edition.url || "", `${edition.language} · ${edition.status}${edition.publisher ? " · " + edition.publisher : ""}`)).join("<br>")}</p>
+          </div>` : ""}
+          <a class="featured-link" href="${book.url}" target="_blank" rel="noopener">책 정보 보기 ↗</a>
+        </div>
+      </article>`;
+    }).join("");
 
     // 단행본
     $("books").innerHTML = (works.books || []).map(x => row({
@@ -125,22 +144,14 @@ async function renderSite() {
       url:x.url
     })).join("");
 
-    // 수상 및 선정
-    const achievementGroups = [
-      { key:"author", label:"작가의 수상·선정" },
-      { key:"book", label:"책의 기록" }
-    ];
-    $("awards-list").innerHTML = achievementGroups.map(group => {
-      const items = awards.filter(x => (x.scope || "author") === group.key);
-      return `<div class="achievement-group">
-        <h3>${group.label}</h3>
-        <div class="rows">${items.map(x => row({
-          year:x.year,
-          title:x.title,
-          right:x.result
-        })).join("")}</div>
-      </div>`;
-    }).join("");
+    // 작가 개인의 수상 및 선정 (책의 성과는 각 Featured Work에 표시)
+    $("awards-list").innerHTML = awards
+      .filter(x => (x.scope || "author") === "author")
+      .map(x => row({
+        year:x.year,
+        title:x.title,
+        right:x.result
+      })).join("");
 
     // 추천사
     $("blurbs-list").innerHTML = blurbs.map(x => row({

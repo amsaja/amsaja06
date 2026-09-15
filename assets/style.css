@@ -736,3 +736,68 @@ footer{
 @media(prefers-reduced-motion:reduce){
   .guide-tip{transition:none}
 }
+
+
+/* Book-centered featured works */
+.featured-works{padding:72px 0}
+.featured-heading{margin-bottom:38px}
+#featured-list{display:grid;gap:0}
+.featured-entry{
+  display:grid;
+  grid-template-columns:240px minmax(0,1fr);
+  gap:68px;
+  align-items:start;
+  padding:0 0 72px;
+}
+.featured-entry+.featured-entry{
+  padding-top:72px;
+  border-top:1px solid var(--line);
+}
+.featured-entry:last-child{padding-bottom:0}
+.featured-entry .featured-copy h3{
+  margin:13px 0 7px;
+  font-family:Georgia,"Noto Serif KR",serif;
+  font-size:clamp(31px,4.2vw,48px);
+  line-height:1.28;
+  font-weight:500;
+  letter-spacing:-.04em;
+}
+.featured-records{margin:28px 0 22px}
+.featured-records h4,.featured-editions h4{
+  margin:0 0 8px;
+  color:var(--muted);
+  font-size:10px;
+  letter-spacing:.06em;
+}
+.featured-records ul{
+  margin:0;
+  padding:0;
+  border-top:1px solid var(--line);
+  list-style:none;
+}
+.featured-records li{
+  display:grid;
+  grid-template-columns:42px minmax(0,1fr) auto;
+  gap:10px;
+  padding:8px 0;
+  border-bottom:1px solid var(--line);
+  font-size:11px;
+}
+.featured-records time{color:var(--muted);font-family:Georgia,serif}
+.featured-records strong{color:var(--accent);font-size:10px}
+.featured-editions{margin:0 0 24px}
+.featured-editions p{margin:0;color:var(--muted);font-size:11px;line-height:1.9}
+.featured-editions a:after{content:" ↗";color:var(--accent)}
+#awards-list{border-top:1px solid var(--line)}
+@media(max-width:700px){
+  .featured-works{padding:52px 0}
+  .featured-entry{grid-template-columns:112px minmax(0,1fr);gap:24px;padding-bottom:52px}
+  .featured-entry+.featured-entry{padding-top:52px}
+  .featured-entry .featured-copy h3{font-size:27px}
+  .featured-records{grid-column:1/3}
+  .featured-records li{grid-template-columns:36px minmax(0,1fr) auto;gap:7px}
+}
+@media(max-width:480px){
+  .featured-entry{grid-template-columns:88px minmax(0,1fr);gap:18px}
+  .featured-entry .featured-note{grid-column:1/3}
+}
