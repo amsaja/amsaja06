@@ -27,6 +27,7 @@ data/
   blurbs.json        추천사
   columns.json       칼럼
   talks.json         강연과 수업
+  places.json        오프라인 강연 장소 지도 좌표
   press.json         기사와 인터뷰
   meta.json          마지막 업데이트 날짜
 ```
