@@ -3,132 +3,141 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="description" content="소설가 김슬기의 작품과 활동을 소개하는 공식 홈페이지.">
+  <meta name="description" content="소설가 김슬기 공식 홈페이지. 작품, 수상·선정, 번역, 칼럼, 강연, 기사와 인터뷰 아카이브.">
   <title>김슬기 | Kim Seulgi</title>
-  <link rel="stylesheet" href="assets/style.css?v=2026091516">
-  <link rel="stylesheet" href="assets/home.css?v=2026091516">
+  <link rel="stylesheet" href="assets/style.css?v=2026091515">
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 </head>
-<body class="home-world">
-  <main class="home-shell">
-    <header class="world-header">
-      <a class="world-brand" href="#top">김슬기 <span>Kim Seulgi · Novelist</span></a>
-      <nav aria-label="주요 메뉴">
-        <a href="#featured">대표작</a>
-        <a href="#map">만난 곳</a>
-        <a href="#about">작가 소개</a>
-        <a href="#contact">연락</a>
-        <a class="archive-door" href="archive.html">기록 보관소 ↗</a>
-      </nav>
+<body>
+  <main class="site">
+    <header class="profile" id="top">
+      <div class="profile-copy">
+        <h1 id="name"></h1>
+        <p class="role" id="roles"></p>
+        <p class="summary" id="summary"></p>
+        <p class="focus" id="focus"></p>
+        <p class="location" id="location"></p>
+
+        <div class="contact-top">
+          <h2>연락처</h2>
+          <p><span>Email</span><span id="email"></span></p>
+          <p><span>Instagram</span><a id="instagram" target="_blank" rel="noopener">@hit_seul ↗</a></p>
+          <p><span>Blog</span><a id="blog" target="_blank" rel="noopener">amsaja_books ↗</a></p>
+        </div>
+      </div>
+      <figure class="profile-photo"><img src="assets/images/profile.jpg" alt="소설가 김슬기"></figure>
     </header>
 
-    <section class="world-hero" id="top">
-      <div class="hero-copy">
-        <p class="world-kicker">WELCOME TO MY STORY WORLD</p>
-        <h1>안녕하세요.<br>소설가 김슬기입니다.</h1>
-        <p id="hero-intro" class="hero-intro"></p>
-        <div class="path-buttons">
-          <a href="#featured">대표작 만나기</a>
-          <a href="archive.html">전체 기록 보기</a>
-        </div>
-      </div>
-      <div class="guide-zone">
-        <div id="guide-speech" class="guide-speech" aria-live="polite">어서 오세요. 제가 이곳을 안내할게요.</div>
-        <button id="guide-character" class="guide-character" type="button" aria-label="안내 캐릭터의 다음 이야기 듣기">
-          <img src="assets/images/guide-character-v1.png" alt="책을 안고 방문자를 맞는 김슬기 작가 안내 캐릭터">
-        </button>
-        <span class="guide-hint">캐릭터를 눌러보세요</span>
-      </div>
-    </section>
-
-    <nav class="world-paths" aria-label="홈페이지 둘러보기">
-      <a href="#featured"><span>01</span><strong>책의 방</strong><small>대표작과 번역판</small></a>
-      <a href="#map"><span>02</span><strong>만남의 지도</strong><small>독자를 만난 장소</small></a>
-      <a href="#about"><span>03</span><strong>작가의 책상</strong><small>소개와 활동</small></a>
-      <a href="archive.html"><span>04</span><strong>기록 보관소</strong><small>전체 이력과 원문</small></a>
+    <nav class="section-nav" aria-label="페이지 목차">
+      <a href="#featured">대표작</a>
+      <a href="#selected">필진 및 활동</a>
+      <a href="#work">작품</a>
+      <a href="#awards">수상 및 선정</a>
+            <a href="#blurbs">추천사</a>
+      <a href="#column">칼럼</a>
+      <a href="#talks">강연과 수업</a>
+      <a href="#press">기사와 인터뷰</a>
+      <a href="#archive">아카이브</a>
     </nav>
 
-    <section id="featured" class="home-feature">
-      <div class="room-label"><span>01</span><p>책의 방</p></div>
-      <figure><img src="assets/images/book-grandmother.jpg" alt="강하고 아름다운 할머니가 되고 싶어 표지"></figure>
-      <div class="feature-copy">
-        <p class="world-kicker">FEATURED NOVEL</p>
+    <section id="featured" class="featured-work">
+      <figure class="featured-cover">
+        <img src="assets/images/book-grandmother.jpg" alt="장편소설 강하고 아름다운 할머니가 되고 싶어 표지">
+      </figure>
+      <div class="featured-copy">
+        <span class="eyebrow">Featured Work · 장편소설</span>
         <h2 id="featured-title"></h2>
-        <p class="feature-meta" id="featured-meta"></p>
-        <p class="feature-description">살아가는 일에 지친 청년 ‘강하고’가 바다 마을 구절초리의 근육질 할머니들과 동고동락하며 생의 의지와 나아갈 용기를 되찾는 이야기.</p>
-        <div id="book-achievements" class="book-achievements"></div>
-        <div id="translation-teaser" class="translation-teaser"></div>
-        <a id="featured-link" class="world-button" target="_blank" rel="noopener">책 정보 보기 ↗</a>
+        <p id="featured-meta" class="featured-meta"></p>
+        <p class="featured-note">살아가는 일에 지친 청년 ‘강하고’가 바다 마을 구절초리의 근육질 할머니들과 동고동락하며 생의 의지와 나아갈 용기를 되찾는 이야기.</p>
+        <div class="featured-badges">
+          <span>제12회 브런치북 대상</span>
+          <span>한국에서 가장 재미있는 책</span>
+          <span>문학나눔 선정</span>
+        </div>
+        <a id="featured-link" class="featured-link" target="_blank" rel="noopener">책 정보 보기 ↗</a>
       </div>
     </section>
 
-    <section id="map" class="home-map-section">
-      <div class="room-label"><span>02</span><p>만남의 지도</p></div>
-      <div class="map-heading">
-        <div>
-          <p class="world-kicker">MEET THE READERS</p>
-          <h2>독자들을 만난 곳</h2>
-        </div>
-        <p>지도 위 번호를 누르면 각 장소에서 진행한 강연과 수업을 볼 수 있습니다.</p>
-      </div>
-      <div class="talk-map-block home-talk-map">
+    <section id="selected">
+      <h2>필진 및 활동</h2>
+      <div id="selected-list" class="rows"></div>
+    </section>
+
+    <section id="work">
+      <h2>작품</h2>
+      <h3>단행본</h3>
+      <div id="books" class="rows"></div>
+      <h3>해외 번역판</h3>
+      <div id="translations-list" class="rows"></div>
+      <h3>단편소설</h3>
+      <div id="short-fiction" class="rows"></div>
+    </section>
+
+    <section id="awards">
+      <h2>수상 및 선정</h2>
+      <div id="awards-list" class="rows"></div>
+    </section>
+<section id="blurbs">
+      <h2>추천사</h2>
+      <div id="blurbs-list" class="rows"></div>
+    </section>
+
+    <section id="column">
+      <h2>칼럼</h2>
+      <div id="columns-list" class="rows"></div>
+    </section>
+
+    <section id="talks">
+      <h2>강연과 수업</h2>
+      <figure class="talk-photo">
+        <img src="assets/images/seoul-bookfair-2026.jpg" alt="2026 서울국제도서전 세션에서 이야기하는 김슬기 소설가">
+        <figcaption>2026 서울국제도서전 · 「익숙한 세계를 뒤집는 재미」 <span>© 서울국제도서전</span></figcaption>
+      </figure>
+      <div class="talk-map-block">
         <div class="talk-map-copy">
           <span class="eyebrow">Across Korea</span>
-          <h3>전국의 학교와 도서관으로</h3>
-          <p>작품과 소설 쓰기에 관한 이야기를 나누어 왔습니다.</p>
+          <h3>독자들을 만난 곳</h3>
+          <p>학교, 도서관과 문화공간에서 이어온 강연과 수업의 기록입니다. 지도 위 핀을 누르면 각 장소에서 진행한 강연과 수업을 볼 수 있습니다.</p>
           <div id="talk-map-legend" class="talk-map-legend"></div>
         </div>
-        <div id="talk-map" class="talk-map" aria-label="강연 장소 지도"></div>
+        <div id="talk-map" class="talk-map" aria-label="지역별 강연 활동 지도"></div>
       </div>
-      <a class="text-link" href="archive.html#talks">강연 전체 기록 보기 →</a>
+      <div id="talks-list"></div>
     </section>
 
-    <section id="about" class="home-about">
-      <div class="room-label"><span>03</span><p>작가의 책상</p></div>
-      <div class="about-card">
-        <div>
-          <p class="world-kicker">ABOUT THE AUTHOR</p>
-          <h2>김슬기</h2>
-          <p id="about-copy"></p>
-        </div>
-        <div class="activity-note">
-          <span>현재 활동</span>
-          <strong id="current-activity"></strong>
-          <a href="archive.html#awards">수상·선정 기록 보기 →</a>
-        </div>
-      </div>
+    <section id="press">
+      <h2>기사와 인터뷰</h2>
+      <div id="press-list" class="rows press-rows"></div>
     </section>
 
-    <section id="contact" class="home-contact">
-      <div class="room-label"><span>04</span><p>편지를 보내는 곳</p></div>
-      <div class="mailbox-copy">
-        <p class="world-kicker">WRITE TO THE AUTHOR</p>
-        <h2>작가에게 편지를 보내주세요.</h2>
-        <p>독후감과 응원은 독자의 우체통으로, 강연·출판·인터뷰·협업 제안은 업무 문의로 보내주세요.</p>
+    <section id="archive" class="archive-section">
+      <div class="section-heading">
+        <h2>아카이브</h2>
+        <span>Complete Archive</span>
       </div>
-      <div class="mailbox-actions">
-        <a id="reader-mail" href="#"><span>독자의 우체통</span><small>감상과 응원 보내기</small></a>
-        <a id="work-mail" href="#"><span>강연·협업 문의</span><small>업무 메일 보내기</small></a>
+      <p class="archive-intro">작품 발표, 칼럼, 강연, 기사와 인터뷰 등 작가 활동의 전체 기록입니다.</p>
+      <div class="archive-tools">
+        <label class="archive-search">
+          <span class="sr-only">아카이브 검색</span>
+          <input id="archive-query" type="search" placeholder="제목, 기관, 매체 검색" autocomplete="off">
+        </label>
+        <div id="archive-filters" class="archive-filters" aria-label="분야 선택"></div>
       </div>
-      <p class="publish-note">독자 메모는 동의한 내용에 한해 선별하여 홈페이지에 소개할 수 있습니다.</p>
+      <p id="archive-status" class="archive-status" aria-live="polite"></p>
+      <div id="archive-list" class="archive-list"></div>
     </section>
 
-    <section class="archive-gate">
-      <img src="assets/images/guide-character-v1.png" alt="" aria-hidden="true">
-      <div>
-        <p class="world-kicker">COMPLETE ARCHIVE</p>
-        <h2>더 많은 기록은<br>보관소에 있습니다.</h2>
-        <p>작품, 번역, 수상과 선정, 칼럼, 강연, 기사와 인터뷰의 전체 기록과 원문 링크를 확인할 수 있습니다.</p>
-        <a class="world-button dark" href="archive.html">기록 보관소 들어가기 →</a>
-      </div>
+    <section id="social">
+      <h2>SNS</h2>
+      <p class="social-links"><a id="social-instagram" target="_blank" rel="noopener">인스타그램 ↗</a><a id="social-blog" target="_blank" rel="noopener">네이버 블로그 ↗</a></p>
     </section>
 
-    <footer class="world-footer">
+    <footer>
       <span>© Kim Seulgi</span>
       <span id="updated"></span>
-      <a href="#top">처음으로 ↑</a>
+      <a href="#top">Top ↑</a>
     </footer>
   </main>
-  <script src="assets/home.js?v=2026091516"></script>
+  <script src="assets/app.js?v=2026091515"></script>
 </body>
 </html>
