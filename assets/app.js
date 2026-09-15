@@ -123,7 +123,8 @@ async function renderSite() {
       year:x.year,
       title:x.title,
       sub:[`원작 『${x.original_title}』`, x.language, x.publisher].filter(Boolean).join(" · "),
-      right:x.status
+      right:x.status,
+      url:x.url || ""
     })).join("");
 
     // 단편소설
@@ -211,7 +212,7 @@ async function renderSite() {
       })),
       ...translations.map(x => ({
         category:"번역", date:x.year, title:x.title,
-        detail:[x.language, x.publisher, x.status].filter(Boolean).join(" · "), url:""
+        detail:[x.language, x.publisher, x.status].filter(Boolean).join(" · "), url:x.url || ""
       })),
       ...blurbs.map(x => ({
         category:"추천사", date:x.year, title:`『${x.title}』 추천사`,
