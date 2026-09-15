@@ -525,3 +525,99 @@ footer{
   .talk-map-block{grid-template-columns:1fr;padding:26px 18px}
   .talk-map{max-width:580px;margin:4px auto 0}
 }
+
+
+/* Refined archival map markers */
+.pin-hit{fill:transparent}
+.pin-marker{
+  fill:var(--paper);
+  stroke:var(--accent);
+  stroke-width:2;
+  vector-effect:non-scaling-stroke;
+}
+.pin-number{
+  fill:var(--accent);
+  font-family:Georgia,serif;
+  font-size:10px;
+  font-weight:700;
+  pointer-events:none;
+}
+.venue-pin:hover .pin-marker,
+.venue-pin:focus .pin-marker,
+.venue-pin.active .pin-marker{
+  fill:var(--ink);
+  stroke:var(--ink);
+}
+.venue-pin:hover .pin-number,
+.venue-pin:focus .pin-number,
+.venue-pin.active .pin-number{fill:#fff}
+.talk-map-legend{
+  display:block;
+  margin-top:22px;
+}
+.venue-index-count{
+  display:block;
+  margin-bottom:12px;
+  color:var(--muted);
+  font-size:11px;
+}
+.venue-index{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:3px 12px;
+}
+.venue-index button{
+  display:grid;
+  grid-template-columns:20px minmax(0,1fr);
+  gap:6px;
+  align-items:center;
+  padding:4px 0;
+  border:0;
+  background:transparent;
+  color:var(--muted);
+  cursor:pointer;
+  text-align:left;
+  font:inherit;
+  font-size:10px;
+}
+.venue-index button em{
+  display:grid;
+  place-items:center;
+  width:18px;
+  height:18px;
+  border:1px solid var(--line);
+  border-radius:50%;
+  color:var(--accent);
+  font-family:Georgia,serif;
+  font-size:9px;
+  font-style:normal;
+}
+.venue-index button:hover,
+.venue-index button.active{color:var(--ink)}
+.venue-index button:hover em,
+.venue-index button.active em{
+  border-color:var(--ink);
+  background:var(--ink);
+  color:#fff;
+}
+@media(max-width:760px){
+  .talk-map-block{display:block}
+  .talk-map-copy{margin-bottom:18px}
+  .talk-map-copy>p{max-width:440px}
+  .venue-index{grid-template-columns:1fr 1fr}
+  .talk-map{width:100%;max-width:470px}
+  .map-stage svg{max-height:520px}
+  .venue-label{display:none}
+  .map-popup{
+    position:relative;
+    right:auto;
+    bottom:auto;
+    width:100%;
+    margin-top:10px;
+    box-shadow:none;
+  }
+}
+@media(max-width:420px){
+  .venue-index{grid-template-columns:1fr}
+  .map-stage svg{max-height:440px}
+}
