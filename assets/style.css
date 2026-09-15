@@ -451,3 +451,77 @@ footer{
   .talk-map-block{grid-template-columns:1fr}
   .talk-map{width:210px;margin:0 auto}
 }
+
+
+/* Detailed interactive lecture map */
+.talk-map-block{
+  grid-template-columns:minmax(220px,.72fr) minmax(430px,1.28fr);
+  overflow:hidden;
+}
+.talk-map{min-width:0}
+.map-stage{position:relative;width:100%}
+.map-stage svg{display:block;width:100%;height:auto;overflow:visible}
+.map-stage .korea-shape{
+  fill:#ece7dc;
+  stroke:#bab3a6;
+  stroke-width:2;
+  vector-effect:non-scaling-stroke;
+}
+.map-stage .jeju{stroke-width:1.5}
+.venue-pin{cursor:pointer;outline:none}
+.pin-leader{
+  stroke:#b6afa3;
+  stroke-width:1;
+  stroke-dasharray:2 3;
+  vector-effect:non-scaling-stroke;
+}
+.pin-anchor{fill:#a8a095}
+.pin-shape{fill:var(--accent);filter:drop-shadow(0 2px 2px rgba(24,24,24,.18))}
+.pin-hole{fill:var(--paper);pointer-events:none}
+.venue-label{
+  fill:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"Pretendard","Noto Sans KR",sans-serif;
+  font-size:10px;
+  font-weight:650;
+  paint-order:stroke;
+  stroke:var(--paper);
+  stroke-width:4px;
+  stroke-linejoin:round;
+}
+.venue-pin:hover .pin-shape,
+.venue-pin:focus .pin-shape,
+.venue-pin.active .pin-shape{fill:var(--ink)}
+.venue-pin:hover .venue-label,
+.venue-pin:focus .venue-label,
+.venue-pin.active .venue-label{fill:var(--accent)}
+.map-popup{
+  position:absolute;
+  right:8px;
+  bottom:8px;
+  width:min(310px,calc(100% - 16px));
+  padding:18px 42px 18px 19px;
+  background:rgba(24,24,24,.96);
+  color:#fff;
+  box-shadow:0 14px 40px rgba(24,24,24,.22);
+}
+.map-popup[hidden]{display:none}
+.map-popup-city{display:block;margin-bottom:4px;color:#d59787;font-size:10px;font-weight:700}
+.map-popup>strong{display:block;font-family:Georgia,"Noto Serif KR",serif;font-size:17px;font-weight:500}
+.map-popup ul{margin:12px 0 0;padding-left:17px}
+.map-popup li{margin-top:6px;font-size:11px;line-height:1.5}
+.map-popup li small{color:#bbb4aa;font-size:10px}
+.map-popup-close{
+  position:absolute;
+  top:7px;
+  right:9px;
+  padding:2px 7px;
+  border:0;
+  background:transparent;
+  color:#fff;
+  cursor:pointer;
+  font-size:20px;
+}
+@media(max-width:760px){
+  .talk-map-block{grid-template-columns:1fr;padding:26px 18px}
+  .talk-map{max-width:580px;margin:4px auto 0}
+}
