@@ -404,3 +404,50 @@ footer{
   .archive-action{grid-column:3;grid-row:1/3;align-self:center;font-size:0}
   .archive-action:not(:empty):after{content:"↗";font-size:13px}
 }
+
+
+/* Lecture activity map */
+.talk-map-block{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) 330px;
+  gap:54px;
+  align-items:center;
+  margin:10px 0 58px;
+  padding:38px 42px;
+  background:var(--paper);
+  border:1px solid var(--line);
+}
+.talk-map-copy h3{
+  margin:10px 0 13px;
+  font-family:Georgia,"Noto Serif KR",serif;
+  font-size:27px;
+  font-weight:500;
+}
+.talk-map-copy p{margin:0;color:var(--muted);font-size:13px;line-height:1.75}
+.talk-map-legend{display:flex;flex-wrap:wrap;gap:8px 15px;margin-top:22px;color:var(--muted);font-size:11px}
+.talk-map-legend strong{color:var(--ink);font-weight:700}
+.talk-map svg{display:block;width:100%;height:auto}
+.korea-shape{fill:var(--bg);stroke:var(--line);stroke-width:2}
+.map-pin circle{fill:var(--accent)}
+.map-count{fill:#fff;font-family:Georgia,serif;font-size:13px;font-weight:700}
+.map-label{fill:var(--ink);font-size:11px;font-weight:700}
+
+/* Achievement groups */
+#awards-list{border-top:0}
+.achievement-group{margin-top:36px}
+.achievement-group:first-child{margin-top:0}
+.achievement-group>h3{
+  margin:0 0 12px;
+  font-size:13px;
+  font-weight:700;
+}
+@media(max-width:700px){
+  .talk-map-block{grid-template-columns:1fr 190px;gap:18px;padding:24px 20px;margin-bottom:42px}
+  .talk-map-copy h3{font-size:21px}
+  .talk-map-copy p{font-size:11px}
+  .talk-map-legend{gap:5px 10px;margin-top:14px}
+}
+@media(max-width:480px){
+  .talk-map-block{grid-template-columns:1fr}
+  .talk-map{width:210px;margin:0 auto}
+}
