@@ -11,6 +11,7 @@ const DATA_FILES = {
   blurbs: "data/blurbs.json",
   columns: "data/columns.json",
   talks: "data/talks.json",
+  places: "data/places.json",
   press: "data/press.json",
   meta: "data/meta.json"
 };
@@ -51,6 +52,7 @@ async function renderSite() {
       blurbs,
       columns,
       talks,
+      places,
       press,
       meta
     ] = await Promise.all([
@@ -63,6 +65,7 @@ async function renderSite() {
       loadJSON(DATA_FILES.blurbs),
       loadJSON(DATA_FILES.columns),
       loadJSON(DATA_FILES.talks),
+      loadJSON(DATA_FILES.places),
       loadJSON(DATA_FILES.press),
       loadJSON(DATA_FILES.meta)
     ]);
@@ -172,38 +175,86 @@ async function renderSite() {
     })).join("");
 
     // 강연 활동 지도
-    const mapPositions = {
-      "인천": { x:85, y:115 },
-      "서울": { x:116, y:105 },
-      "경기": { x:151, y:88 },
-      "충남": { x:119, y:193 },
-      "대구": { x:205, y:257 }
-    };
-    const regionCounts = talks
-      .flatMap(group => group.items || [])
-      .filter(x => x.region)
-      .reduce((counts, x) => {
-        counts[x.region] = (counts[x.region] || 0) + 1;
-        return counts;
-      }, {});
+    const mapTalks = talks.flatMap(group =>
+      (group.items || []).map(item => ({ ...item, groupLabel:group.label }))
+    );
+    const venues = places.map(place => ({
+      ...place,
+      talks:mapTalks.filter(item => item.place === place.name)
+    })).filter(place => place.talks.length);
+
+    const boundary = [
+      [128.349716,38.612243],[129.21292,37.432392],[129.46045,36.784189],
+      [129.468304,35.632141],[129.091377,35.082484],[128.18585,34.890377],
+      [127.386519,34.475674],[126.485748,34.390046],[126.37392,34.93456],
+      [126.559231,35.684541],[126.117398,36.725485],[126.860143,36.893924],
+      [126.174759,37.749686],[126.237339,37.840378],[126.68372,37.804773],
+      [127.073309,38.256115],[127.780035,38.304536],[128.205746,38.370397]
+    ];
+    const bounds = { minLon:125.95, maxLon:129.65, minLat:33.0, maxLat:38.85 };
+    const project = (lon,lat) => ({
+      x:110 + ((lon-bounds.minLon)/(bounds.maxLon-bounds.minLon))*300,
+      y:35 + ((bounds.maxLat-lat)/(bounds.maxLat-bounds.minLat))*515
+    });
+    const outline = boundary.map(([lon,lat],index) => {
+      const p=project(lon,lat);
+      return `${index ? "L" : "M"}${p.x.toFixed(1)},${p.y.toFixed(1)}`;
+    }).join(" ")+" Z";
+
     $("talk-map").innerHTML = `
-      <svg viewBox="0 0 300 410" role="img" aria-labelledby="talk-map-title">
-        <title id="talk-map-title">김슬기 작가의 지역별 강연 활동</title>
-        <path class="korea-shape" d="M143 24 C177 38 198 62 200 91 C203 119 184 137 192 161 C199 184 229 197 231 225 C232 248 212 268 216 291 C219 315 242 330 231 354 C218 383 181 386 163 364 C148 346 151 318 133 302 C113 284 86 276 78 250 C69 223 88 204 83 180 C78 155 58 135 67 107 C77 78 105 67 116 43 C122 30 131 24 143 24 Z"/>
-        ${Object.entries(regionCounts).map(([region,count]) => {
-          const point = mapPositions[region];
-          if (!point) return "";
-          return `<g class="map-pin" transform="translate(${point.x} ${point.y})">
-            <circle r="19"></circle>
-            <text class="map-count" text-anchor="middle" y="5">${count}</text>
-            <text class="map-label" text-anchor="middle" y="34">${region}</text>
-          </g>`;
-        }).join("")}
-      </svg>`;
-    $("talk-map-legend").innerHTML = Object.entries(regionCounts)
-      .sort((a,b) => b[1] - a[1])
-      .map(([region,count]) => `<span><strong>${region}</strong> ${count}</span>`)
-      .join("");
+      <div class="map-stage">
+        <svg viewBox="0 0 520 620" role="img" aria-labelledby="talk-map-title">
+          <title id="talk-map-title">김슬기 작가의 전국 강연 장소 지도</title>
+          <path class="korea-shape" d="${outline}"/>
+          <ellipse class="korea-shape jeju" cx="250" cy="582" rx="39" ry="13"/>
+          ${venues.map((venue,index) => {
+            const anchor=project(venue.lon,venue.lat);
+            const pinX=anchor.x+venue.dx;
+            const pinY=anchor.y+venue.dy;
+            const labelAnchor=venue.dx < 0 ? "end" : "start";
+            const labelX=pinX+(venue.dx < 0 ? -12 : 12);
+            return `<g class="venue-pin" data-venue-index="${index}" role="button" tabindex="0" aria-label="${venue.name} 강연 정보 보기">
+              <line class="pin-leader" x1="${anchor.x}" y1="${anchor.y}" x2="${pinX}" y2="${pinY}"/>
+              <circle class="pin-anchor" cx="${anchor.x}" cy="${anchor.y}" r="3"/>
+              <path class="pin-shape" transform="translate(${pinX-10} ${pinY-24})" d="M10 0C4.5 0 0 4.5 0 10c0 7.5 10 18 10 18s10-10.5 10-18C20 4.5 15.5 0 10 0Z"/>
+              <circle class="pin-hole" cx="${pinX}" cy="${pinY-14}" r="3.5"/>
+              <text class="venue-label" x="${labelX}" y="${pinY-9}" text-anchor="${labelAnchor}">${venue.short}</text>
+            </g>`;
+          }).join("")}
+        </svg>
+        <div id="map-popup" class="map-popup" hidden></div>
+      </div>`;
+
+    $("talk-map-legend").innerHTML = `<span><strong>${venues.length}곳</strong>의 오프라인 강연 장소</span>`;
+
+    function openVenue(index){
+      const venue=venues[index];
+      const popup=$("map-popup");
+      popup.innerHTML=`
+        <button type="button" class="map-popup-close" aria-label="닫기">×</button>
+        <span class="map-popup-city">${venue.city}</span>
+        <strong>${venue.name}</strong>
+        <ul>${venue.talks.map(talk => `<li>${talk.title}${talk.detail ? ` <small>· ${talk.detail}</small>` : ""}</li>`).join("")}</ul>`;
+      popup.hidden=false;
+      document.querySelectorAll(".venue-pin").forEach((pin,i) =>
+        pin.classList.toggle("active",i===Number(index))
+      );
+      popup.querySelector(".map-popup-close").addEventListener("click",() => {
+        popup.hidden=true;
+        document.querySelectorAll(".venue-pin").forEach(pin=>pin.classList.remove("active"));
+      });
+    }
+    $("talk-map").addEventListener("click",event => {
+      const pin=event.target.closest(".venue-pin");
+      if(pin) openVenue(pin.dataset.venueIndex);
+    });
+    $("talk-map").addEventListener("keydown",event => {
+      const pin=event.target.closest(".venue-pin");
+      if(pin && (event.key==="Enter" || event.key===" ")){
+        event.preventDefault();
+        openVenue(pin.dataset.venueIndex);
+      }
+    });
 
     // 강연과 수업
     $("talks-list").innerHTML = talks.map(group => `
