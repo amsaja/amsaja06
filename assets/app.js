@@ -3,6 +3,7 @@ const $ = (id) => document.getElementById(id);
 
 const DATA_FILES = {
   profile: "data/profile.json",
+  news: "data/news.json",
   selected: "data/selected.json",
   works: "data/works.json",
   awards: "data/awards.json",
@@ -42,6 +43,7 @@ async function renderSite() {
   try {
     const [
       profile,
+      news,
       selected,
       works,
       awards,
@@ -53,6 +55,7 @@ async function renderSite() {
       meta
     ] = await Promise.all([
       loadJSON(DATA_FILES.profile),
+      loadJSON(DATA_FILES.news),
       loadJSON(DATA_FILES.selected),
       loadJSON(DATA_FILES.works),
       loadJSON(DATA_FILES.awards),
@@ -67,7 +70,8 @@ async function renderSite() {
     // 소개
     $("name").textContent = profile.name_ko;
     $("roles").textContent = profile.roles;
-    $("summary").textContent = profile.summary;
+    $("summary").textContent = profile.summary || "";
+    $("summary").hidden = !profile.summary;
     $("focus").textContent = profile.focus;
     $("location").textContent = profile.location;
     $("email").textContent = profile.email;
@@ -75,6 +79,17 @@ async function renderSite() {
     $("blog").href = profile.blog;
     $("social-instagram").href = profile.instagram;
     $("social-blog").href = profile.blog;
+
+    // 최근 소식
+    $("news-list").innerHTML = news.map(x => `
+      <article class="news-item">
+        <time datetime="${x.date.replaceAll(".", "-")}">${x.date}</time>
+        <span class="news-category">${x.category || ""}</span>
+        <span class="news-copy">
+          <strong>${external(x.url, x.title)}</strong>
+          ${x.detail ? `<small>${x.detail}</small>` : ""}
+        </span>
+      </article>`).join("");
 
     // 주요 활동
     $("selected-list").innerHTML = selected.map(x => row({
