@@ -366,3 +366,61 @@ async function renderSite() {
 }
 
 renderSite();
+
+
+(function initFloatingGuide(){
+  const toggle=document.getElementById("guide-toggle");
+  const menu=document.getElementById("guide-menu");
+  const close=document.getElementById("guide-close");
+  const tip=document.getElementById("guide-tip");
+  if(!toggle||!menu) return;
+
+  function setOpen(open){
+    menu.hidden=!open;
+    toggle.setAttribute("aria-expanded",String(open));
+    toggle.setAttribute("aria-label",open?"빠른 이동 메뉴 닫기":"빠른 이동 메뉴 열기");
+    if(open){
+      tip.classList.add("is-hidden");
+      const first=menu.querySelector("a");
+      if(first) window.setTimeout(function(){first.focus();},0);
+    }
+  }
+
+  toggle.addEventListener("click",function(){setOpen(menu.hidden);});
+  close.addEventListener("click",function(){setOpen(false);toggle.focus();});
+  menu.addEventListener("click",function(event){
+    if(event.target.closest("a")) setOpen(false);
+  });
+  document.addEventListener("click",function(event){
+    if(!menu.hidden&&!event.target.closest(".floating-guide")) setOpen(false);
+  });
+  document.addEventListener("keydown",function(event){
+    if(event.key==="Escape"&&!menu.hidden){setOpen(false);toggle.focus();}
+  });
+
+  try{
+    if(localStorage.getItem("kim-seulgi-guide-seen")){
+      tip.hidden=true;
+    }else{
+      localStorage.setItem("kim-seulgi-guide-seen","1");
+      window.setTimeout(function(){tip.classList.add("is-hidden");},4200);
+      window.setTimeout(function(){tip.hidden=true;},4600);
+    }
+  }catch(error){
+    window.setTimeout(function(){tip.hidden=true;},4200);
+  }
+
+  const links=Array.from(menu.querySelectorAll("a[href^='#']"));
+  const sections=links.map(function(link){return document.querySelector(link.getAttribute("href"));}).filter(Boolean);
+  if("IntersectionObserver" in window){
+    const observer=new IntersectionObserver(function(entries){
+      const visible=entries.filter(function(entry){return entry.isIntersecting;})
+        .sort(function(a,b){return b.intersectionRatio-a.intersectionRatio;})[0];
+      if(!visible) return;
+      links.forEach(function(link){
+        link.classList.toggle("active",link.getAttribute("href")==="#"+visible.target.id);
+      });
+    },{rootMargin:"-25% 0px -60% 0px",threshold:[0,.1,.3]});
+    sections.forEach(function(section){observer.observe(section);});
+  }
+})();
