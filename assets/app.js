@@ -137,11 +137,21 @@ async function renderSite() {
     })).join("");
 
     // 수상 및 선정
-    $("awards-list").innerHTML = awards.map(x => row({
-      year:x.year,
-      title:x.title,
-      right:x.result
-    })).join("");
+    const achievementGroups = [
+      { key:"author", label:"작가의 수상·선정" },
+      { key:"book", label:"책의 기록" }
+    ];
+    $("awards-list").innerHTML = achievementGroups.map(group => {
+      const items = awards.filter(x => (x.scope || "author") === group.key);
+      return `<div class="achievement-group">
+        <h3>${group.label}</h3>
+        <div class="rows">${items.map(x => row({
+          year:x.year,
+          title:x.title,
+          right:x.result
+        })).join("")}</div>
+      </div>`;
+    }).join("");
 
     // 추천사
     $("blurbs-list").innerHTML = blurbs.map(x => row({
@@ -160,6 +170,40 @@ async function renderSite() {
       right:"읽기 ↗",
       url:x.url
     })).join("");
+
+    // 강연 활동 지도
+    const mapPositions = {
+      "인천": { x:85, y:115 },
+      "서울": { x:116, y:105 },
+      "경기": { x:151, y:88 },
+      "충남": { x:119, y:193 },
+      "대구": { x:205, y:257 }
+    };
+    const regionCounts = talks
+      .flatMap(group => group.items || [])
+      .filter(x => x.region)
+      .reduce((counts, x) => {
+        counts[x.region] = (counts[x.region] || 0) + 1;
+        return counts;
+      }, {});
+    $("talk-map").innerHTML = `
+      <svg viewBox="0 0 300 410" role="img" aria-labelledby="talk-map-title">
+        <title id="talk-map-title">김슬기 작가의 지역별 강연 활동</title>
+        <path class="korea-shape" d="M143 24 C177 38 198 62 200 91 C203 119 184 137 192 161 C199 184 229 197 231 225 C232 248 212 268 216 291 C219 315 242 330 231 354 C218 383 181 386 163 364 C148 346 151 318 133 302 C113 284 86 276 78 250 C69 223 88 204 83 180 C78 155 58 135 67 107 C77 78 105 67 116 43 C122 30 131 24 143 24 Z"/>
+        ${Object.entries(regionCounts).map(([region,count]) => {
+          const point = mapPositions[region];
+          if (!point) return "";
+          return `<g class="map-pin" transform="translate(${point.x} ${point.y})">
+            <circle r="19"></circle>
+            <text class="map-count" text-anchor="middle" y="5">${count}</text>
+            <text class="map-label" text-anchor="middle" y="34">${region}</text>
+          </g>`;
+        }).join("")}
+      </svg>`;
+    $("talk-map-legend").innerHTML = Object.entries(regionCounts)
+      .sort((a,b) => b[1] - a[1])
+      .map(([region,count]) => `<span><strong>${region}</strong> ${count}</span>`)
+      .join("");
 
     // 강연과 수업
     $("talks-list").innerHTML = talks.map(group => `
