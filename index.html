@@ -30,6 +30,7 @@
 
     <nav class="section-nav" aria-label="페이지 목차">
       <a href="#news">최근 소식</a>
+      <a href="#featured">대표작</a>
       <a href="#selected">주요 활동</a>
       <a href="#work">작품</a>
       <a href="#awards">수상 및 선정</a>
@@ -37,6 +38,7 @@
       <a href="#column">칼럼</a>
       <a href="#talks">강연과 수업</a>
       <a href="#press">기사와 인터뷰</a>
+      <a href="#archive">아카이브</a>
     </nav>
 
     <section id="news" class="news-section">
@@ -45,6 +47,24 @@
         <span>News & Updates</span>
       </div>
       <div id="news-list" class="news-list"></div>
+    </section>
+
+    <section id="featured" class="featured-work">
+      <figure class="featured-cover">
+        <img src="assets/images/book-grandmother.jpg" alt="장편소설 강하고 아름다운 할머니가 되고 싶어 표지">
+      </figure>
+      <div class="featured-copy">
+        <span class="eyebrow">Featured Work · 장편소설</span>
+        <h2 id="featured-title"></h2>
+        <p id="featured-meta" class="featured-meta"></p>
+        <p class="featured-note">죽음보다 삶을, 체념보다 유머를 선택하는 세 할머니의 이야기.</p>
+        <div class="featured-badges">
+          <span>제12회 브런치북 대상</span>
+          <span>한국에서 가장 재미있는 책</span>
+          <span>문학나눔 선정</span>
+        </div>
+        <a id="featured-link" class="featured-link" target="_blank" rel="noopener">책 정보 보기 ↗</a>
+      </div>
     </section>
 
     <section id="selected">
@@ -88,6 +108,23 @@
     <section id="press">
       <h2>기사와 인터뷰</h2>
       <div id="press-list" class="rows press-rows"></div>
+    </section>
+
+    <section id="archive" class="archive-section">
+      <div class="section-heading">
+        <h2>아카이브</h2>
+        <span>Complete Archive</span>
+      </div>
+      <p class="archive-intro">작품 발표, 칼럼, 강연, 기사와 인터뷰 등 작가 활동의 전체 기록입니다.</p>
+      <div class="archive-tools">
+        <label class="archive-search">
+          <span class="sr-only">아카이브 검색</span>
+          <input id="archive-query" type="search" placeholder="제목, 기관, 매체 검색" autocomplete="off">
+        </label>
+        <div id="archive-filters" class="archive-filters" aria-label="분야 선택"></div>
+      </div>
+      <p id="archive-status" class="archive-status" aria-live="polite"></p>
+      <div id="archive-list" class="archive-list"></div>
     </section>
 
     <section id="social">
