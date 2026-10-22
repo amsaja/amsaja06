@@ -6,14 +6,16 @@
     "publisher": "Eksmo / Bombora",
     "status": "출간",
     "original_title": "강하고 아름다운 할머니가 되고 싶어",
-    "url": "https://www.chitai-gorod.ru/product/tri-babuski-spasli-mena-ot-smerti-samyj-ozidaemyj-hiling-roman-2025-goda-3148334"
+    "url": "https://www.chitai-gorod.ru/product/tri-babuski-spasli-mena-ot-smerti-samyj-ozidaemyj-hiling-roman-2025-goda-3148334",
+    "cover": "assets/images/translation-russian.jpg"
   },
   {
     "year": "2026",
     "language": "인도네시아어",
     "title": "I Want to Be a Strong and Beautiful Grandmother",
-    "publisher": "",
+    "publisher": "Bhuana Ilmu Populer",
     "status": "출간 예정",
-    "original_title": "강하고 아름다운 할머니가 되고 싶어"
+    "original_title": "강하고 아름다운 할머니가 되고 싶어",
+    "cover": "assets/images/translation-indonesian.jpg"
   }
 ]

@@ -110,7 +110,20 @@ async function renderSite() {
           </div>` : ""}
           ${editions.length ? `<div class="featured-editions">
             <h4>해외 번역판</h4>
-            <p>${editions.map(edition => external(edition.url || "", `${edition.language} · ${edition.status}${edition.publisher ? " · " + edition.publisher : ""}`)).join("<br>")}</p>
+            <div class="featured-edition-grid">
+              ${editions.map(edition => {
+                const tag = edition.url ? "a" : "div";
+                const linkAttrs = edition.url ? ` href="${edition.url}" target="_blank" rel="noopener"` : "";
+                return `<${tag} class="featured-edition-card"${linkAttrs}>
+                  <span class="featured-edition-cover"><img src="${edition.cover}" alt="${edition.language}판 『${edition.title}』 표지"></span>
+                  <span class="featured-edition-info">
+                    <strong>${edition.language}판</strong>
+                    <span>${edition.title}</span>
+                    <small>${[edition.publisher, edition.status].filter(Boolean).join(" · ")}</small>
+                  </span>
+                </${tag}>`;
+              }).join("")}
+            </div>
           </div>` : ""}
           <a class="featured-link" href="${book.url}" target="_blank" rel="noopener">책 정보 보기 ↗</a>
         </div>
