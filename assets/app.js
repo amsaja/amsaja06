@@ -184,7 +184,7 @@ async function renderSite() {
       url:x.url
     })).join("");
 
-    // 강연 활동 지도
+    // 강연 활동 지도: 전국 지도 + 수도권 확대 지도
     const mapTalks = talks.flatMap(group =>
       (group.items || []).map(item => ({ ...item, groupLabel:group.label }))
     );
@@ -192,6 +192,13 @@ async function renderSite() {
       ...place,
       talks:mapTalks.filter(item => item.place === place.name)
     })).filter(place => place.talks.length);
+    const venueIndex = venue => venues.indexOf(venue);
+    const venueNumber = venue => venueIndex(venue) + 1;
+    const isMetro = venue =>
+      venue.lat >= 37.18 && venue.lat <= 38.2 &&
+      venue.lon >= 126.4 && venue.lon <= 127.35;
+    const metroVenues = venues.filter(isMetro);
+    const regionalVenues = venues.filter(venue => !isMetro(venue));
 
     const boundary = [
       [128.349716,38.612243],[129.21292,37.432392],[129.46045,36.784189],
@@ -201,47 +208,96 @@ async function renderSite() {
       [126.174759,37.749686],[126.237339,37.840378],[126.68372,37.804773],
       [127.073309,38.256115],[127.780035,38.304536],[128.205746,38.370397]
     ];
-    const bounds = { minLon:125.95, maxLon:129.65, minLat:33.0, maxLat:38.85 };
-    const project = (lon,lat) => ({
-      x:110 + ((lon-bounds.minLon)/(bounds.maxLon-bounds.minLon))*300,
-      y:35 + ((bounds.maxLat-lat)/(bounds.maxLat-bounds.minLat))*515
+    const nationalBounds = { minLon:125.95, maxLon:129.65, minLat:33.0, maxLat:38.85 };
+    const metroBounds = { minLon:126.48, maxLon:127.28, minLat:37.18, maxLat:38.02 };
+    const projectNational = (lon,lat) => ({
+      x:52 + ((lon-nationalBounds.minLon)/(nationalBounds.maxLon-nationalBounds.minLon))*210,
+      y:24 + ((nationalBounds.maxLat-lat)/(nationalBounds.maxLat-nationalBounds.minLat))*350
     });
-    const outline = boundary.map(([lon,lat],index) => {
-      const p=project(lon,lat);
+    const projectMetro = (lon,lat) => ({
+      x:42 + ((lon-metroBounds.minLon)/(metroBounds.maxLon-metroBounds.minLon))*376,
+      y:42 + ((metroBounds.maxLat-lat)/(metroBounds.maxLat-metroBounds.minLat))*276
+    });
+    const nationalOutline = boundary.map(([lon,lat],index) => {
+      const p=projectNational(lon,lat);
       return `${index ? "L" : "M"}${p.x.toFixed(1)},${p.y.toFixed(1)}`;
     }).join(" ")+" Z";
+    const metroRiverPoints = [
+      [126.62,37.59],[126.76,37.57],[126.90,37.55],[127.02,37.53],[127.18,37.55]
+    ].map(([lon,lat],index) => {
+      const p=projectMetro(lon,lat);
+      return `${index ? "L" : "M"}${p.x.toFixed(1)},${p.y.toFixed(1)}`;
+    }).join(" ");
 
+    const renderPin = (venue, projection, useOffset=false) => {
+      const anchor=projection(venue.lon,venue.lat);
+      const markerX=useOffset ? anchor.x + venue.dx * .31 : anchor.x;
+      const markerY=useOffset ? anchor.y + venue.dy * .31 : anchor.y;
+      const index=venueIndex(venue);
+      return `<g class="venue-pin" data-venue-index="${index}" role="button" tabindex="0" aria-label="${venueNumber(venue)}. ${venue.name} 강연 정보 보기">
+        ${useOffset ? `<line class="pin-leader" x1="${anchor.x}" y1="${anchor.y}" x2="${markerX}" y2="${markerY}"/><circle class="pin-anchor" cx="${anchor.x}" cy="${anchor.y}" r="2.4"/>` : ""}
+        <circle class="pin-hit" cx="${markerX}" cy="${markerY}" r="20"/>
+        <circle class="pin-marker" cx="${markerX}" cy="${markerY}" r="12"/>
+        <text class="pin-number" x="${markerX}" y="${markerY+4}" text-anchor="middle">${venueNumber(venue)}</text>
+      </g>`;
+    };
+
+    const metroCenter=projectNational(126.98,37.55);
     $("talk-map").innerHTML = `
-      <div class="map-stage">
-        <svg viewBox="0 0 520 620" role="img" aria-labelledby="talk-map-title">
-          <title id="talk-map-title">김슬기 작가의 전국 강연 장소 지도</title>
-          <path class="korea-shape" d="${outline}"/>
-          <ellipse class="korea-shape jeju" cx="250" cy="582" rx="39" ry="13"/>
-          ${venues.map((venue,index) => {
-            const anchor=project(venue.lon,venue.lat);
-            const markerX=anchor.x+venue.dx;
-            const markerY=anchor.y+venue.dy;
-            const labelAnchor=venue.dx < 0 ? "end" : "start";
-            const labelX=markerX+(venue.dx < 0 ? -17 : 17);
-            return `<g class="venue-pin" data-venue-index="${index}" role="button" tabindex="0" aria-label="${index+1}. ${venue.name} 강연 정보 보기">
-              <line class="pin-leader" x1="${anchor.x}" y1="${anchor.y}" x2="${markerX}" y2="${markerY}"/>
-              <circle class="pin-anchor" cx="${anchor.x}" cy="${anchor.y}" r="2.5"/>
-              <circle class="pin-hit" cx="${markerX}" cy="${markerY}" r="20"/>
-              <circle class="pin-marker" cx="${markerX}" cy="${markerY}" r="11"/>
-              <text class="pin-number" x="${markerX}" y="${markerY+4}" text-anchor="middle">${index+1}</text>
-              <text class="venue-label" x="${labelX}" y="${markerY+4}" text-anchor="${labelAnchor}">${venue.short}</text>
-            </g>`;
-          }).join("")}
-        </svg>
+      <div class="map-stage map-stage-dual">
+        <div class="map-panels">
+          <section class="map-panel national-panel" aria-labelledby="national-map-label">
+            <div class="map-panel-heading">
+              <strong id="national-map-label">전국</strong>
+              <span>${venues.length}곳</span>
+            </div>
+            <svg viewBox="0 0 310 410" role="img" aria-label="전국 강연 장소 지도">
+              <path class="korea-shape" d="${nationalOutline}"/>
+              <ellipse class="korea-shape jeju" cx="156" cy="394" rx="25" ry="8"/>
+              ${regionalVenues.map(venue => renderPin(venue,projectNational)).join("")}
+              <g class="metro-cluster" data-show-metro role="button" tabindex="0" aria-label="수도권 ${metroVenues.length}곳 확대 지도 보기">
+                <circle cx="${metroCenter.x}" cy="${metroCenter.y}" r="22"/>
+                <text x="${metroCenter.x}" y="${metroCenter.y+4}" text-anchor="middle">${metroVenues.length}</text>
+                <text class="metro-cluster-label" x="${metroCenter.x}" y="${metroCenter.y+39}" text-anchor="middle">수도권</text>
+              </g>
+            </svg>
+          </section>
+          <section id="metro-map-panel" class="map-panel metro-panel" aria-labelledby="metro-map-label">
+            <div class="map-panel-heading">
+              <strong id="metro-map-label">수도권 확대</strong>
+              <span>서울 · 인천 · 경기</span>
+            </div>
+            <svg viewBox="0 0 460 350" role="img" aria-label="수도권 강연 장소 확대 지도">
+              <path class="metro-land" d="M20,36 L398,24 L438,86 L431,319 L34,326 L14,246 Z"/>
+              <path class="metro-river" d="${metroRiverPoints}"/>
+              <text class="metro-area-label" x="58" y="166">인천</text>
+              <text class="metro-area-label" x="260" y="175">서울</text>
+              <text class="metro-area-label" x="342" y="74">경기 북부</text>
+              <text class="metro-area-label" x="318" y="310">경기 남부</text>
+              ${metroVenues.map(venue => renderPin(venue,projectMetro,true)).join("")}
+            </svg>
+          </section>
+        </div>
         <div id="map-popup" class="map-popup" hidden></div>
       </div>`;
 
+    const renderVenueButtons = list => list.map(venue => {
+      const index=venueIndex(venue);
+      return `<button type="button" data-venue-index="${index}">
+        <em>${index+1}</em><span>${venue.short}</span>
+      </button>`;
+    }).join("");
     $("talk-map-legend").innerHTML = `
       <span class="venue-index-count"><strong>${venues.length}곳</strong>의 오프라인 강연 장소</span>
-      <div class="venue-index">
-        ${venues.map((venue,index) => `<button type="button" data-venue-index="${index}">
-          <em>${index+1}</em><span>${venue.short}</span>
-        </button>`).join("")}
+      <div class="venue-index-groups">
+        <div class="venue-index-group">
+          <h4>수도권 <span>${metroVenues.length}</span></h4>
+          <div class="venue-index">${renderVenueButtons(metroVenues)}</div>
+        </div>
+        <div class="venue-index-group">
+          <h4>그 밖의 지역 <span>${regionalVenues.length}</span></h4>
+          <div class="venue-index">${renderVenueButtons(regionalVenues)}</div>
+        </div>
       </div>`;
 
     function openVenue(index){
@@ -253,11 +309,11 @@ async function renderSite() {
         <strong>${venue.name}</strong>
         <ul>${venue.talks.map(talk => `<li>${talk.title}${talk.detail ? ` <small>· ${talk.detail}</small>` : ""}</li>`).join("")}</ul>`;
       popup.hidden=false;
-      document.querySelectorAll(".venue-pin").forEach((pin,i) =>
-        pin.classList.toggle("active",i===Number(index))
+      document.querySelectorAll(".venue-pin").forEach(pin =>
+        pin.classList.toggle("active",Number(pin.dataset.venueIndex)===Number(index))
       );
-      document.querySelectorAll(".venue-index button").forEach((button,i) =>
-        button.classList.toggle("active",i===Number(index))
+      document.querySelectorAll(".venue-index button").forEach(button =>
+        button.classList.toggle("active",Number(button.dataset.venueIndex)===Number(index))
       );
       popup.querySelector(".map-popup-close").addEventListener("click",() => {
         popup.hidden=true;
@@ -267,15 +323,30 @@ async function renderSite() {
         popup.scrollIntoView({ behavior:"smooth", block:"nearest" });
       }
     }
+    function showMetroPanel(){
+      const panel=$("metro-map-panel");
+      panel.classList.remove("map-panel-pulse");
+      void panel.offsetWidth;
+      panel.classList.add("map-panel-pulse");
+      if(window.matchMedia("(max-width: 760px)").matches){
+        panel.scrollIntoView({behavior:"smooth",block:"nearest"});
+      }
+    }
     document.querySelector(".talk-map-block").addEventListener("click",event => {
       const target=event.target.closest("[data-venue-index]");
       if(target) openVenue(target.dataset.venueIndex);
+      if(event.target.closest("[data-show-metro]")) showMetroPanel();
     });
     $("talk-map").addEventListener("keydown",event => {
       const pin=event.target.closest(".venue-pin");
       if(pin && (event.key==="Enter" || event.key===" ")){
         event.preventDefault();
         openVenue(pin.dataset.venueIndex);
+      }
+      const cluster=event.target.closest("[data-show-metro]");
+      if(cluster && (event.key==="Enter" || event.key===" ")){
+        event.preventDefault();
+        showMetroPanel();
       }
     });
 
