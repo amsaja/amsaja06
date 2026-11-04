@@ -1028,3 +1028,74 @@ footer{
   .map-panels{grid-template-columns:125px 285px}
   .venue-index{grid-template-columns:1fr}
 }
+
+/* 2026-11-04: compact homepage and dedicated full archive */
+.section-more{
+  display:inline-flex;
+  gap:10px;
+  align-items:center;
+  margin-top:22px;
+  border-bottom:1px solid var(--ink);
+  padding-bottom:5px;
+  font-size:13px;
+  font-weight:650;
+}
+.section-more span{font-weight:400;color:var(--accent)}
+.talk-history{margin-top:34px;border-top:1px solid var(--line)}
+.talk-history>summary{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  cursor:pointer;
+  list-style:none;
+  padding:17px 0;
+  font-size:14px;
+  font-weight:650;
+}
+.talk-history>summary::-webkit-details-marker{display:none}
+.talk-history>summary span{
+  margin-left:auto;
+  color:var(--muted);
+  font-size:12px;
+  font-weight:400;
+}
+.talk-history>summary::after{content:"+";color:var(--accent);font-size:21px;line-height:1}
+.talk-history[open]>summary::after{content:"−"}
+.talk-history #talks-list{padding:7px 0 10px}
+.archive-portal-link{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:32px;
+  padding:27px 0;
+  border-top:2px solid var(--ink);
+  border-bottom:1px solid var(--line);
+  text-decoration:none;
+}
+.archive-portal-link:hover{text-decoration:none}
+.archive-portal-link:hover strong{text-decoration:underline;text-underline-offset:4px}
+.archive-portal-copy{display:grid;gap:5px}
+.archive-portal-copy strong{font-size:18px;font-weight:650}
+.archive-portal-copy small{font-size:13px;color:var(--muted)}
+.archive-portal-arrow{color:var(--accent);font-size:26px;flex:none}
+.archive-page-head{padding:0 0 24px;border-bottom:1px solid var(--line)}
+.archive-back{display:inline-block;margin-bottom:50px;font-size:13px;font-weight:650}
+.archive-page-head .eyebrow{color:var(--accent);font-size:11px;letter-spacing:.12em;text-transform:uppercase}
+.archive-page-head h1{
+  margin:4px 0 14px;
+  font-family:Georgia,"Noto Serif KR",serif;
+  font-weight:500;
+  font-size:clamp(36px,5vw,54px);
+  letter-spacing:-.035em;
+}
+.archive-page-head>p:last-child{max-width:680px;color:var(--muted);margin:0}
+.archive-page .archive-section{padding:30px 0 75px}
+@media(max-width:700px){
+  .talk-history>summary{gap:8px;font-size:13px}
+  .talk-history>summary span{font-size:11px;text-align:right}
+  .archive-portal-link{padding:22px 0;gap:15px}
+  .archive-portal-copy strong{font-size:16px}
+  .archive-portal-copy small{font-size:12px}
+  .archive-back{margin-bottom:35px}
+  .archive-page .archive-section{padding-bottom:48px}
+}
