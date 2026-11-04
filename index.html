@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="description" content="소설가 김슬기 공식 홈페이지. 작품, 수상·선정, 번역, 칼럼, 강연, 기사와 인터뷰 아카이브.">
   <title>김슬기 | Kim Seulgi</title>
-  <link rel="stylesheet" href="assets/style.css?v=2026103002">
+  <link rel="stylesheet" href="assets/style.css?v=2026110401">
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 </head>
 <body>
@@ -37,7 +37,7 @@
       <a href="#column">칼럼</a>
       <a href="#talks">강연과 수업</a>
       <a href="#press">기사와 인터뷰</a>
-      <a href="#archive">아카이브</a>
+      <a href="archive.html">아카이브 ↗</a>
     </nav>
 
     <section id="featured" class="featured-works">
@@ -92,29 +92,30 @@
         </div>
         <div id="talk-map" class="talk-map" aria-label="지역별 강연 활동 지도"></div>
       </div>
-      <div id="talks-list"></div>
+      <details class="talk-history">
+        <summary>강연과 수업 상세 목록 <span>전체 이력 펼쳐보기</span></summary>
+        <div id="talks-list"></div>
+      </details>
     </section>
 
     <section id="press">
       <h2>기사와 인터뷰</h2>
       <div id="press-list" class="rows press-rows"></div>
+      <a class="section-more" href="archive.html?category=press">기사와 인터뷰 전체 보기 <span aria-hidden="true">↗</span></a>
     </section>
 
-    <section id="archive" class="archive-section">
+    <section id="archive" class="archive-portal">
       <div class="section-heading">
         <h2>아카이브</h2>
         <span>Complete Archive</span>
       </div>
-      <p class="archive-intro">작품 발표, 칼럼, 강연, 기사와 인터뷰 등 작가 활동의 전체 기록입니다.</p>
-      <div class="archive-tools">
-        <label class="archive-search">
-          <span class="sr-only">아카이브 검색</span>
-          <input id="archive-query" type="search" placeholder="제목, 기관, 매체 검색" autocomplete="off">
-        </label>
-        <div id="archive-filters" class="archive-filters" aria-label="분야 선택"></div>
-      </div>
-      <p id="archive-status" class="archive-status" aria-live="polite"></p>
-      <div id="archive-list" class="archive-list"></div>
+      <a class="archive-portal-link" href="archive.html">
+        <span class="archive-portal-copy">
+          <strong>전체 활동 기록 보기</strong>
+          <small>작품 발표, 강연, 칼럼, 기사와 인터뷰까지 연도·분야별로 찾아보세요.</small>
+        </span>
+        <span class="archive-portal-arrow" aria-hidden="true">↗</span>
+      </a>
     </section>
 
     <section id="social">
@@ -143,7 +144,7 @@
         <a href="#talks">강연 지도</a>
         <a href="#column">칼럼</a>
         <a href="#press">기사·인터뷰</a>
-        <a href="#archive">전체 아카이브</a>
+        <a href="archive.html">전체 아카이브</a>
         <a href="#top">연락처</a>
       </nav>
     </div>
@@ -152,6 +153,6 @@
       <span>둘러보기</span>
     </button>
   </aside>
-  <script src="assets/app.js?v=2026103002"></script>
+  <script src="assets/app.js?v=2026110401"></script>
 </body>
 </html>
